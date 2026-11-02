@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Live Playground & Tag Studio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts & Phosphor Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        },
+                        accent: {
+                            purple: '#a855f7',
+                            cyan: '#06b6d4',
+                            pink: '#ec4899',
+                            amber: '#f59e0b'
+                        },
+                        dark: {
+                            bg: '#090d16',
+                            card: '#111827',
+                            editor: '#0d1117',
+                            border: '#1f2937'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .light .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        .tab-active {
+            border-bottom: 2px solid #a855f7;
+            color: #a855f7;
+        }
+    </style>
+</head>
+<body class="bg-dark-bg text-slate-100 font-sans min-h-screen flex flex-col transition-colors duration-300 dark" id="mainBody">
+
+    <!-- BARRA SUPERIOR / HEADER -->
+    <header class="glass-panel sticky top-0 z-50 px-4 py-3 flex items-center justify-between shadow-xl">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-accent-purple via-accent-cyan to-brand-500 flex items-center justify-center text-white shadow-lg shadow-purple-500/20">
+                <i class="ph-bold ph-code text-2xl"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent flex items-center gap-2">
+                    TagStudio <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-accent-purple/20 text-accent-purple border border-accent-purple/30">W3Schools Edition</span>
+                </h1>
+                <p class="text-xs text-slate-400 hidden sm:block">Laboratório Interativo de Tags HTML (Block vs Inline)</p>
+            </div>
+        </div>
+
+        <!-- AÇÕES / CONTROLES HEADER -->
+        <div class="flex items-center gap-2 sm:gap-3">
+            <!-- Botão Frase Motivacional -->
+            <button onclick="gerarFraseMotivacional()" class="hidden md:flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" title="Inspirar">
+                <i class="ph-bold ph-lightbulb text-accent-amber text-base"></i>
+                <span class="hidden lg:inline">Dica / Frase</span>
+            </button>
+
+            <!-- Botão Interativo Ficha -->
+            <button onclick="mostrarMensagem()" class="flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-lg bg-gradient-to-r from-accent-purple to-accent-pink hover:opacity-90 text-white shadow-md shadow-purple-500/20 transition">
+                <i class="ph-bold ph-bell-ringing text-sm"></i>
+                <span class="hidden sm:inline">Interação JS</span>
+            </button>
+
+            <!-- Alterar Cor do Destaque -->
+            <button onclick="mudarCor()" class="flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" title="Mudar Cor Accent">
+                <i class="ph-bold ph-palette text-accent-cyan text-base"></i>
+                <span class="hidden md:inline">Mudar Cor</span>
+            </button>
+
+            <!-- Modo Escuro / Claro -->
+            <button onclick="modoEscuro()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" title="Alternar Modo Escuro/Claro">
+                <i class="ph-bold ph-moon-stars text-lg dark:block hidden text-amber-400"></i>
+                <i class="ph-bold ph-sun text-lg dark:hidden block text-amber-500"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- BANNER MOTIVACIONAL / AVISO -->
+    <div id="bannerMotivacao" class="bg-gradient-to-r from-purple-950/60 via-slate-900 to-slate-950 border-b border-slate-800/80 px-4 py-2 flex items-center justify-between text-xs text-slate-300">
+        <div class="flex items-center gap-2 max-w-4xl truncate">
+            <span class="px-2 py-0.5 rounded bg-accent-purple/20 text-accent-purple font-bold uppercase text-[10px] tracking-wider">Inspiração</span>
+            <span id="textoFrase" class="italic truncate">"A prática constante com código torna a estrutura intuitiva."</span>
+        </div>
+        <button onclick="gerarFraseMotivacional()" class="text-accent-cyan hover:underline font-semibold ml-2 shrink-0 flex items-center gap-1">
+            <i class="ph-bold ph-arrows-clockwise"></i> Nova Frase
+        </button>
+    </div>
+
+    <!-- MAIN CONTENT GRID -->
+    <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 max-w-[1920px] mx-auto w-full">
+
+        <!-- PAINEL ESQUERDO: BIBLIOTECA DE TAGS & EXPLICAÇÕES (4 COLS) -->
+        <aside class="lg:col-span-4 flex flex-col gap-4">
+            
+            <!-- EXPLICADOR VISUAL BLOCK VS INLINE -->
+            <div class="glass-panel rounded-2xl p-4 border border-slate-800 shadow-xl">
+                <h2 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center justify-between">
+                    <span><i class="ph-bold ph-git-fork text-accent-purple mr-1"></i> Bloco vs Inline</span>
+                    <button onclick="toggleComparadorModal()" class="text-xs text-accent-cyan hover:underline">Ver Guia</button>
+                </h2>
+                
+                <div class="grid grid-cols-2 gap-2 text-xs mb-3">
+                    <div class="p-2.5 rounded-xl bg-purple-950/40 border border-purple-500/30 text-purple-200">
+                        <div class="font-bold text-purple-400 flex items-center gap-1 mb-1">
+                            <i class="ph-bold ph-square"></i> Block
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-snug">Ocupa 100% da largura. Começa sempre numa nova linha.</p>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-cyan-200">
+                        <div class="font-bold text-cyan-400 flex items-center gap-1 mb-1">
+                            <i class="ph-bold ph-selection-plus"></i> Inline
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-snug">Ocupa apenas a largura do seu conteúdo. Permanece na mesma linha.</p>
+                    </div>
+                </div>
+
+                <!-- Toggle para Ativar Highlight de Destaque no Preview -->
+                <label class="flex items-center justify-between p-2 rounded-lg bg-slate-900/60 border border-slate-800 cursor-pointer text-xs">
+                    <span class="flex items-center gap-2 text-slate-300">
+                        <i class="ph-bold ph-paint-brush text-accent-pink"></i> Highlight Visual de Ocupação
+                    </span>
+                    <input type="checkbox" id="toggleHighlight" onchange="atualizarPreview()" class="w-4 h-4 accent-purple-500 rounded cursor-pointer" checked>
+                </label>
+            </div>
+
+            <!-- SELETOR / BIBLIOTECA DE TAGS -->
+            <div class="glass-panel rounded-2xl p-4 border border-slate-800 shadow-xl flex-1 flex flex-col">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                        <i class="ph-bold ph-books text-accent-cyan"></i> Biblioteca de Tags
+                    </h2>
+                    <span class="text-[11px] text-slate-500">Clica para Inserir</span>
+                </div>
+
+                <!-- TABS: BLOCO / INLINE -->
+                <div class="flex border-b border-slate-800 mb-3 text-xs font-semibold">
+                    <button onclick="mudarAbaTags('block')" id="tabBlockBtn" class="flex-1 py-2 text-center text-purple-400 border-b-2 border-purple-500">
+                        Tags de Bloco (Block)
+                    </button>
+                    <button onclick="mudarAbaTags('inline')" id="tabInlineBtn" class="flex-1 py-2 text-center text-slate-400 hover:text-slate-200">
+                        Tags Inline
+                    </button>
+                </div>
+
+                <!-- PAINEL TAGS DE BLOCO -->
+                <div id="tagsBlockContainer" class="grid grid-cols-2 gap-2 overflow-y-auto max-h-[380px] pr-1">
+                    <button onclick="inserirTag('<div class=\'box-exemplo\'>\n  <h3>Conteúdo da Div</h3>\n  <p>Uma div é o contentor de bloco padrão.</p>\n</div>')" class="tag-btn text-left p-2.5 rounded-xl bg-slate-900/70 hover:bg-purple-950/40 border border-slate-800 hover:border-purple-500/50 transition group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-xs font-bold text-purple-400 group-hover:text-purple-300">&lt;div&gt;</span>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">Bloco</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Contentor genérico de bloco.</p>
+                    </button>
+
+                    <button onclick="inserirTag('<p>Este é um <strong>parágrafo</strong> completo com a sua própria linha de bloco.</p>')" class="tag-btn text-left p-2.5 rounded-xl bg-slate-900/70 hover:bg-purple-950/40 border border-slate-800 hover:border-purple-500/50 transition group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-xs font-bold text-purple-400 group-hover:text-purple-300">&lt;p&gt;</span>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">Bloco</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Parágrafo de texto.</p>
+                    </button>
+
+                    <button onclick="inserirTag('<h1>Título Principal H1</h1>\n<h2>Subtítulo H2</h2>')" class="tag-btn text-left p-2.5 rounded-xl bg-slate-900/70 hover:bg-purple-950/40 border border-slate-800 hover:border-purple-500/50 transition group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-xs font-bold text-purple-400 group-hover:text-purple-300">&lt;h1-h6&gt;</span>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">Bloco</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Cabeçalhos de h1 até h6.</p>
+                    </button>
+
+                    <button onclick="inserirTag('<article class=\'post\'>\n  <h2>Artigo de Notícia</h2>\n  <p>Conteúdo autónomo e estruturado.</p>\n</article>')" class="tag-btn text-left p-2.5 rounded-xl bg-slate-900/70 hover:bg-purple-950/40 border border-slate-800 hover:border-purple-500/50 transition group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-xs font-bold text-purple-400 group-hover:text-purple-300">&lt;article&gt;</span>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">Bloco</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Artigo ou post autónomo.</p>
+                    </button>
+
+                    <button onclick="inserirTag('<section>\n  <h2>Secção do Site</h2>\n  <p>Grupo temático de conteúdos.</p>\n</section>')" class="tag-btn text-left p-2.5 rounded-xl bg-slate-900/70 hover:bg-purple-950/40 border border-slate-800 hover:border-purple-500/50 transition group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-xs font-bold text-purple-400 group-hover:text-purple-300">&lt;section&gt;</span>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">Bloco</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Secção de documento.</p>
+                    </button>
+
+                    <button onclick="inserirTag('<ul>\n  <li>Item 1 Não Ordenado</li>\n  <li>Item 2 Não Ordenado</li>\n</ul>')" class="tag-btn text-left p-2.5 rounded-xl bg-slate-900/70 hover:bg-purple-950/40 border border-slate-800 hover:border-purple-500/50 transition group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-xs font-bold text-purple-400 group-hover:text-purple-300">&lt;ul&gt; / &lt;li&gt;</span>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">Bloco</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Lista com marcas (bullets).</p>
+                    </button>
+
+                    <button onclick="inserirTag('<ol>\n  <li>Primeiro passo</li>\n  <li>Segundo passo</li>\n</ol>')" class="tag-btn text-left p-2.5 rounded-xl bg-slate-900/70 hover:bg-purple-950/40 border border-slate-800 hover:border-purple-500/50 transition group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-xs font-bold text-purple-400 group-hover:text-purple-300">&lt;ol&gt; / &lt;li&gt;</span>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">Bloco</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Lista numerada sequencial.</p>
+                    </button>
+
+                    <button onclick="inserirTag('<blockquote cite=\'https://www.w3schools.com\'>\n  \'A aprendizagem prática é o caminho mais curto para a mestria.\'\n</blockquote>')" class="tag-btn text-left p-2.5 rounded-xl bg-slate-900/70 hover:bg-purple-950/40 border border-slate-800 hover:border-purple-500/50 transition group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-xs font-bold text-purple-400 group-hover:text-purple-300">&lt;blockquote&gt;</span>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">Bloco</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Citação em bloco destacada.</p>
+                    </button>
+
+                    <button onclick="inserirTag('<header>\n  <h2>Logótipo & Menu</h2>\n</header>')" class="tag-btn text-left p-2.5 rounded-xl bg-slate-900/70 hover:bg-purple-950/40 border border-slate-800 hover:border-purple-500/50 transition group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-xs font-bold text-purple-400 group-hover:text-purple-300">&lt;header&gt;</span>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">Bloco</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Cabeçalho de secção ou página.</p>
+                    </button>
+
+                    <button onclick="inserirTag('<footer>\n  <p>&copy; 2026 TagStudio - Todos os direitos reservados.</p>\n</footer>')" class="tag-btn text-left p-2.5 rounded-xl bg-slate-900/70 hover:bg-purple-950/40 border border-slate-800 hover:border-purple-500/50 transition group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-xs font-bold text-purple-400 group-hover:text-purple-300">&lt;footer&gt;</span>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">Bloco</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Rodapé do documento.</p>
+                    </button>
+                </div>
+
+                <!-- PAINEL TAGS INLINE (OCULTO POR DEFEITO) -->
+                <div id="tagsInlineContainer" class="grid grid-cols-2 gap-2 overflow-y-auto max-h-[380px] pr-1 hidden">
+                    <button onclick="inserirTag('Texto normal com <span style=\'color:#ec4899; font-weight:bold;\'>elemento span estilizado</span> dentro da frase.')" class="tag-btn text-left p-2.5 rounded-xl bg-slate-900/70 hover:bg-cyan-950/40 border border-slate-800 hover:border-cyan-500/50 transition group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-xs font-bold text-cyan-400 group-hover:text-cyan-300">&lt;span&gt;</span>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Inline</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Contentor genérico em linha.</p>
+                    </button>
+
+                    <button onclick="inserirTag('Clica para visitar o <a href=\'https://www.w3schools.com\' target=\'_blank\' style=\'color:#06b6d4; text-decoration:underline;\'>W3Schools</a>.')" class="tag-btn text-left p-2.5 rounded-xl bg-slate-900/70 hover:bg-cyan-950/40 border border-slate-800 hover:border-cyan-500/50 transition group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-xs font-bold text-cyan-400 group-hover:text-cyan-300">&lt;a&gt; (Link)</span>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Inline</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Hiperligação para URL.</p>
+                    </button>
+
+                    <button onclick="inserirTag('Isto é texto em <strong>negrito forte (strong)</strong> e <b>b simples</b>.')" class="tag-btn text-left p-2.5 rounded-xl bg-slate-900/70 hover:bg-cyan-950/40 border border-slate-800 hover:border-cyan-500/50 transition group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-xs font-bold text-cyan-400 group-hover:text-cyan-300">&lt;strong&gt; / &lt;b&gt;</span>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Inline</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Destaque em negrito.</p>
+                    </button>
+
+                    <button onclick="inserirTag('Texto em <em>itálico enfatizado (em)</em> e <i>i estilizado</i>.')" class="tag-btn text-left p-2.5 rounded-xl bg-slate-900/70 hover:bg-cyan-950/40 border border-slate-800 hover:border-cyan-500/50 transition group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-xs font-bold text-cyan-400 group-hover:text-cyan-300">&lt;em&gt; / &lt;i&gt;</span>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Inline</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Texto em itálico.</p>
+                    </button>
+
+                    <button onclick="inserirTag('Usa a função <code>document.getElementById()</code> no JS.')" class="tag-btn text-left p-2.5 rounded-xl bg-slate-900/70 hover:bg-cyan-950/40 border border-slate-800 hover:border-cyan-500/50 transition group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-xs font-bold text-cyan-400 group-hover:text-cyan-300">&lt;code&gt;</span>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Inline</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Exibição de código monoespaçado.</p>
+                    </button>
+
+                    <button onclick="inserirTag('Podes <mark>marcar texto importante</mark> com fundo destacado.')" class="tag-btn text-left p-2.5 rounded-xl bg-slate-900/70 hover:bg-cyan-950/40 border border-slate-800 hover:border-cyan-500/50 transition group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-xs font-bold text-cyan-400 group-hover:text-cyan-300">&lt;mark&gt;</span>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Inline</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Texto destacado (highlighter).</p>
+                    </button>
+
+                    <button onclick="inserirTag('<button onclick=\'alert(\"Clicaste no botão Inline!\")\'>Clica Aqui</button>')" class="tag-btn text-left p-2.5 rounded-xl bg-slate-900/70 hover:bg-cyan-950/40 border border-slate-800 hover:border-cyan-500/50 transition group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-xs font-bold text-cyan-400 group-hover:text-cyan-300">&lt;button&gt;</span>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Inline</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Botão interativo.</p>
+                    </button>
+
+                    <button onclick="inserirTag(`&lt;img src='https://placehold.co/120x60/a855f7/ffffff?text=Inline+Img' alt='Exemplo Inline'&gt;`)" class="tag-btn text-left p-2.5 rounded-xl bg-slate-900/70 hover:bg-cyan-950/40 border border-slate-800 hover:border-cyan-500/50 transition group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-xs font-bold text-cyan-400 group-hover:text-cyan-300">&lt;img&gt;</span>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Inline-Block</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">Imagem integrada no fluxo.</p>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- PAINEL CENTRAL / DIREITO: EDITOR E PREVIEW (8 COLS) -->
+        <section class="lg:col-span-8 flex flex-col gap-4">
+
+            <!-- CONTROLES DO EDITOR E MODELOS PRONTOS -->
+            <div class="glass-panel rounded-2xl p-3 border border-slate-800 shadow-xl flex items-center justify-between flex-wrap gap-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                        <i class="ph-bold ph-code-simple text-accent-purple"></i> Templates:
+                    </span>
+                    <button onclick="carregarTemplate('completo')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 border border-slate-700 transition">
+                        Página Completa
+                    </button>
+                    <button onclick="carregarTemplate('blocos')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 border border-slate-700 transition">
+                        Apenas Blocos
+                    </button>
+                    <button onclick="carregarTemplate('inline')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 border border-slate-700 transition">
+                        Demonstração Inline
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button onclick="limparEditor()" class="px-2.5 py-1 rounded-lg bg-red-950/50 hover:bg-red-900/60 text-red-300 border border-red-800/40 text-xs font-semibold transition flex items-center gap-1">
+                        <i class="ph-bold ph-trash"></i> Limpar
+                    </button>
+                    <button onclick="copiarCodigo()" class="px-3 py-1 rounded-lg bg-accent-purple/20 hover:bg-accent-purple/30 text-accent-purple border border-accent-purple/30 text-xs font-semibold transition flex items-center gap-1">
+                        <i class="ph-bold ph-copy"></i> Copiar Código
+                    </button>
+                </div>
+            </div>
+
+            <!-- WORKSPACE DIVIDIDO: EDITOR (TOP) / PREVIEW (BOTTOM) -->
+            <div class="grid grid-cols-1 gap-4 flex-1">
+
+                <!-- EDITOR DE CÓDIGO HTML/CSS -->
+                <div class="glass-panel rounded-2xl border border-slate-800 shadow-2xl flex flex-col overflow-hidden h-[300px] lg:h-[320px]">
+                    <div class="bg-slate-900/90 px-4 py-2 border-b border-slate-800 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="flex gap-1.5">
+                                <span class="w-3 h-3 rounded-full bg-red-500/80 inline-block"></span>
+                                <span class="w-3 h-3 rounded-full bg-amber-500/80 inline-block"></span>
+                                <span class="w-3 h-3 rounded-full bg-green-500/80 inline-block"></span>
+                            </div>
+                            <span class="text-xs font-mono text-slate-400 ml-2">index.html (HTML + CSS ao vivo)</span>
+                        </div>
+                        <span class="text-[10px] text-emerald-400 font-mono bg-emerald-950/60 border border-emerald-800/50 px-2 py-0.5 rounded flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Compilação em Tempo Real
+                        </span>
+                    </div>
+
+                    <textarea id="htmlEditor" oninput="atualizarPreview()" class="w-full flex-1 p-4 bg-dark-editor text-slate-200 font-mono text-sm leading-relaxed outline-none resize-none selection:bg-purple-500/30 selection:text-purple-200" spellcheck="false" placeholder="Escreve o teu código HTML aqui..."></textarea>
+                </div>
+
+                <!-- PREVIEW EM TEMPO REAL -->
+                <div class="glass-panel rounded-2xl border border-slate-800 shadow-2xl flex flex-col overflow-hidden h-[340px] lg:h-[360px]">
+                    <div class="bg-slate-900/90 px-4 py-2 border-b border-slate-800 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <i class="ph-bold ph-eye text-accent-cyan text-base"></i>
+                            <span class="text-xs font-bold text-slate-300">Resultado / Live Preview</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Renderização Iframe</span>
+                        </div>
+                    </div>
+
+                    <!-- IFRAME DO PREVIEW -->
+                    <div class="flex-1 bg-white relative">
+                        <iframe id="livePreview" class="w-full h-full border-none"></iframe>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- RODAPÉ COM CONTADOR DE VISITAS & DIREITOS -->
+    <footer class="glass-panel mt-auto border-t border-slate-800 px-4 py-3 flex items-center justify-between flex-wrap gap-2 text-xs text-slate-400">
+        <div class="flex items-center gap-2">
+            <span>&copy; 2026 <strong>TagStudio</strong> • W3Schools HTML Learning</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <span id="contadorVisitas" class="px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300 font-mono font-bold flex items-center gap-1.5">
+                <i class="ph-bold ph-users text-accent-purple"></i> Visitas: <span id="numVisitas" class="text-accent-cyan">1</span>
+            </span>
+        </div>
+    </footer>
+
+    <!-- MODAL INFORMATIVO COMPARAÇÃO BLOCK VS INLINE -->
+    <div id="modalComparador" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-panel rounded-2xl max-w-lg w-full border border-slate-700 p-6 shadow-2xl relative">
+            <button onclick="toggleComparadorModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl">
+                <i class="ph-bold ph-x"></i>
+            </button>
+            <h3 class="text-lg font-extrabold text-white mb-2 flex items-center gap-2">
+                <i class="ph-bold ph-book-open text-accent-purple"></i> Guia W3Schools: Block vs Inline
+            </h3>
+            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                Em HTML, quase todos os elementos têm um valor de exibição padrão (Block ou Inline).
+            </p>
+
+            <div class="space-y-3 text-xs">
+                <div class="p-3 rounded-xl bg-purple-950/50 border border-purple-500/30">
+                    <h4 class="font-bold text-purple-300 text-sm mb-1">Elementos de Bloco (Block-level)</h4>
+                    <ul class="list-disc list-inside text-slate-300 space-y-1">
+                        <li>Começam sempre numa <strong>nova linha</strong>.</li>
+                        <li>Ocupam automaticamente <strong>100% da largura</strong> disponível.</li>
+                        <li>Possuem margens superiores e inferiores por defeito.</li>
+                        <li>Exemplos: <code>&lt;div&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;h1&gt;</code>, <code>&lt;ul&gt;</code>, <code>&lt;section&gt;</code>.</li>
+                    </ul>
+                </div>
+
+                <div class="p-3 rounded-xl bg-cyan-950/50 border border-cyan-500/30">
+                    <h4 class="font-bold text-cyan-300 text-sm mb-1">Elementos Em Linha (Inline)</h4>
+                    <ul class="list-disc list-inside text-slate-300 space-y-1">
+                        <li><strong>Não começam</strong> numa nova linha.</li>
+                        <li>Ocupam apenas a largura necessária para o seu conteúdo.</li>
+                        <li>Ficam dispostos lado a lado no mesmo parágrafo.</li>
+                        <li>Exemplos: <code>&lt;span&gt;</code>, <code>&lt;a&gt;</code>, <code>&lt;b&gt;</code>, <code>&lt;code&gt;</code>, <code>&lt;button&gt;</code>.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <button onclick="toggleComparadorModal()" class="w-full mt-5 py-2.5 bg-gradient-to-r from-accent-purple to-accent-pink rounded-xl text-white font-bold text-xs shadow-lg">
+                Compreendido! Voltar ao Playground
+            </button>
+        </div>
+    </div>
+
+    <!-- SCRIPT PRINCIPAL E REQUISITOS DA FICHA DE TRABALHO -->
+    <script>
+        // TEMPLATES INICIAIS DE CÓDIGO
+        const TEMPLATES = {
+            completo: `<!-- PÁGINA EXEMPLO COM BLOCOS E INLINE -->
+<header style="background: #1e293b; color: white; padding: 15px; text-align: center; border-radius: 8px;">
+  <h1>TagStudio Web Lab</h1>
+  <p>A explorar elementos de HTML com o W3Schools</p>
+</header>
+
+<main style="margin-top: 15px;">
+  <section style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+    <h2>1. Exemplo de Bloco (&lt;section&gt;)</h2>
+    <p>Este parágrafo é um elemento de <strong>bloco</strong>. Dentro dele temos tags <em>inline</em> como <code>&lt;em&gt;</code> e <mark>linha destacada</mark>.</p>
+  </section>
+
+  <div style="margin-top: 15px; padding: 15px; background: #e0f2fe; border-radius: 8px;">
+    <h3>2. Lista de Compras (&lt;ul&gt;)</h3>
+    <ul>
+      <li>Item de bloco 1</li>
+      <li>Item de bloco 2 com <a href="#" style="color:#0284c7;">Link Inline</a></li>
+    </ul>
+  </div>
+</main>`,
+
+            blocos: `<!-- APENAS ESTRUTURAS DE BLOCO -->
+<div style="background:#f1f5f9; padding:15px; margin-bottom:10px; border-left:4px solid #a855f7;">
+  <h2>Primeira Div (Bloco)</h2>
+  <p>Ocupa a linha inteira!</p>
+</div>
+
+<article style="background:#f1f5f9; padding:15px; margin-bottom:10px; border-left:4px solid #ec4899;">
+  <h2>Artigo Autónomo (Bloco)</h2>
+  <p>Outra estrutura independente de linha completa.</p>
+</article>
+
+<blockquote style="background:#fff7ed; padding:15px; border-left:4px solid #f59e0b; margin:0;">
+  "Block elements take up the full width available." - W3Schools
+</blockquote>`,
+
+            inline: `<!-- DEMONSTRAÇÃO DE ELEMENTOS INLINE -->
+<p style="font-size:16px; line-height:1.8;">
+  Nesta mesma frase podes ver um <span style="color:#a855f7; font-weight:bold;">Span Colorido</span>, 
+  um texto em <strong>Negrito</strong>, outro em <em>Itálico</em>, um bloco de <code>código JS</code>, 
+  um trecho <mark>marcado com amarelo</mark> e um <button onclick="alert('Botão inline!')">Botão Inline</button> 
+  todos a fluir na mesma linha!
+</p>`
+        };
+
+        // FRASES MOTIVACIONAIS (FICHA EXEMPLO 6)
+        const frasesMotivacionais = [
+            "A prática constante com código torna a estrutura intuitiva.",
+            "A dança da programação é feita de linhas bem estruturadas.",
+            "A arte de criar na web começa no domínio dos blocos.",
+            "O HTML dá a estrutura, o CSS a forma e o JS a alma ao projeto.",
+            "Cada tag bem colocada é um passo rumo à excelência do teu site."
+        ];
+
+        // CONTADOR DE VISITAS (FICHA EXEMPLO 5)
+        let visitas = 1;
+
+        // EXECUÇÃO AO CARREGAR A PÁGINA (FICHA EXEMPLO 1)
+        window.onload = function() {
+            // Requisito Ficha Exemplo 1: Mensagem de Boas-vindas (substituindo alert direto invasivo por banner/boas vindas amigável e funcional)
+            console.log("Aplicação iniciada com sucesso!");
+            
+            // Inicializar contador
+            contarVisita();
+            
+            // Carregar Template Inicial
+            document.getElementById('htmlEditor').value = TEMPLATES.completo;
+            atualizarPreview();
+        };
+
+        // EXERCÍCIO 2 DA FICHA: Botão Interativo
+        function mostrarMensagem() {
+            alert("Obrigado por utilizar o TagStudio! A tua visita foi registada com sucesso.");
+        }
+
+        // EXERCÍCIO 3 DA FICHA: Alterar Cor de Fundo / Accent
+        function mudarCor() {
+            const coresBody = ['#090d16', '#0f172a', '#1e1b4b', '#06202a', '#180e29'];
+            const corRandom = coresBody[Math.floor(Math.random() * coresBody.length)];
+            document.getElementById('mainBody').style.backgroundColor = corRandom;
+        }
+
+        // EXERCÍCIO 4 DA FICHA: Modo Escuro / Claro
+        function modoEscuro() {
+            const body = document.getElementById('mainBody');
+            body.classList.toggle('dark');
+            body.classList.toggle('light');
+            if (body.classList.contains('light')) {
+                body.style.backgroundColor = '#f8fafc';
+                body.style.color = '#0f172a';
+            } else {
+                body.style.backgroundColor = '#090d16';
+                body.style.color = '#f8fafc';
+            }
+            atualizarPreview();
+        }
+
+        // EXERCÍCIO 5 DA FICHA: Contador de Visitas
+        function contarVisita() {
+            let visSalvas = localStorage.getItem('tagstudio_visitas');
+            if (visSalvas) {
+                visitas = parseInt(visSalvas) + 1;
+            } else {
+                visitas = 1;
+            }
+            localStorage.setItem('tagstudio_visitas', visitas);
+            document.getElementById('numVisitas').innerText = visitas;
+        }
+
+        // EXERCÍCIO 6 DA FICHA: Frases Motivacionais
+        function gerarFraseMotivacional() {
+            const r = Math.floor(Math.random() * frasesMotivacionais.length);
+            document.getElementById('textoFrase').innerText = `"${frasesMotivacionais[r]}"`;
+        }
+
+        // ATUALIZAÇÃO DO PREVIEW EM TEMPO REAL NO IFRAME
+        function atualizarPreview() {
+            const codigo = document.getElementById('htmlEditor').value;
+            const iframe = document.getElementById('livePreview');
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+            const highlightAtivo = document.getElementById('toggleHighlight').checked;
+
+            // CSS INJETADO NO PREVIEW PARA DESTAQUE DE BLOCO VS INLINE
+            const highlightCSS = highlightAtivo ? `
+                <style>
+                    /* Estilos de Destaque Visual */
+                    div, p, h1, h2, h3, h4, h5, h6, ul, ol, li, article, section, header, footer, blockquote {
+                        outline: 1px dashed rgba(168, 85, 247, 0.5) !important;
+                        position: relative;
+                    }
+                    div::before, p::before, h1::before, h2::before, h3::before, ul::before, article::before, section::before {
+                        content: 'block';
+                        position: absolute;
+                        right: 2px;
+                        top: 0px;
+                        font-size: 8px;
+                        background: rgba(168, 85, 247, 0.2);
+                        color: #a855f7;
+                        padding: 1px 3px;
+                        border-radius: 2px;
+                        pointer-events: none;
+                        font-family: monospace;
+                    }
+                    span, a, b, i, em, strong, code, mark, button, img {
+                        outline: 1px solid rgba(6, 182, 212, 0.6) !important;
+                        background-color: rgba(6, 182, 212, 0.08) !important;
+                    }
+                </style>
+            ` : '';
+
+            const htmlFinal = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <style>
+                        body {
+                            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+                            padding: 15px;
+                            margin: 0;
+                            color: #1e293b;
+                            background-color: #ffffff;
+                        }
+                    </style>
+                    ${highlightCSS}
+                </head>
+                <body>
+                    ${codigo}
+                </body>
+                </html>
+            `;
+
+            iframeDoc.open();
+            iframeDoc.write(htmlFinal);
+            iframeDoc.close();
+        }
+
+        // INSERIR SNIPPET DE TAG NO CURSOR OU NO FIM DO EDITOR
+        function inserirTag(snippet) {
+            const textarea = document.getElementById('htmlEditor');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+
+            const textBefore = textarea.value.substring(0, start);
+            const textAfter = textarea.value.substring(end, textarea.value.length);
+
+            textarea.value = textBefore + (start !== 0 ? '\n' : '') + snippet + '\n' + textAfter;
+            textarea.focus();
+            textarea.selectionStart = textarea.selectionEnd = start + snippet.length + 1;
+
+            atualizarPreview();
+        }
+
+        // TROCA DE TAB DA BIBLIOTECA (BLOCK / INLINE)
+        function mudarAbaTags(tipo) {
+            const blockContainer = document.getElementById('tagsBlockContainer');
+            const inlineContainer = document.getElementById('tagsInlineContainer');
+            const tabBlockBtn = document.getElementById('tabBlockBtn');
+            const tabInlineBtn = document.getElementById('tabInlineBtn');
+
+            if (tipo === 'block') {
+                blockContainer.classList.remove('hidden');
+                inlineContainer.classList.add('hidden');
+                tabBlockBtn.className = "flex-1 py-2 text-center text-purple-400 border-b-2 border-purple-500 font-semibold";
+                tabInlineBtn.className = "flex-1 py-2 text-center text-slate-400 hover:text-slate-200 font-semibold";
+            } else {
+                blockContainer.classList.add('hidden');
+                inlineContainer.classList.remove('hidden');
+                tabInlineBtn.className = "flex-1 py-2 text-center text-cyan-400 border-b-2 border-cyan-500 font-semibold";
+                tabBlockBtn.className = "flex-1 py-2 text-center text-slate-400 hover:text-slate-200 font-semibold";
+            }
+        }
+
+        // CARREGAR TEMPLATE
+        function carregarTemplate(chave) {
+            if (TEMPLATES[chave]) {
+                document.getElementById('htmlEditor').value = TEMPLATES[chave];
+                atualizarPreview();
+            }
+        }
+
+        // LIMPAR EDITOR
+        function limparEditor() {
+            document.getElementById('htmlEditor').value = '';
+            atualizarPreview();
+        }
+
+        // COPIAR CÓDIGO
+        function copiarCodigo() {
+            const textarea = document.getElementById('htmlEditor');
+            textarea.select();
+            document.execCommand('copy');
+            alert("Código copiado para a área de transferência!");
+        }
+
+        // MODAL INFORMATIVO
+        function toggleComparadorModal() {
+            const modal = document.getElementById('modalComparador');
+            modal.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>
